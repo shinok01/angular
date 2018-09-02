@@ -65,6 +65,13 @@ import {_sanitizeHtml} from '../../src/sanitization/html_sanitizer';
       expect(_sanitizeHtml(defaultDoc, '<?pi nodes?>no.')).toEqual('no.');
       expect(logMsgs.join('\n')).toMatch(/sanitizing HTML stripped some content/);
     });
+    
+    it('ignores non-safe elements', () => {
+      expect(_sanitizeHtml(defaultDoc, '<style><!-- foobar --></style><div>hi</div>'))
+        .toEqual('<div>hi</div>');
+      expect(_sanitizeHtml(defaultDoc, '<style><!-- foobar --></style>')).toEqual('');
+      expect(logMsgs.join('\n')).toMatch(/sanitizing HTML stripped some content/);
+    });
 
     it('supports sanitizing escaped entities', () => {
       expect(_sanitizeHtml(defaultDoc, '&#128640;')).toEqual('&#128640;');
