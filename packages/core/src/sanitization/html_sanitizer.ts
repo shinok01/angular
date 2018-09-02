@@ -132,7 +132,8 @@ class SanitizingHtmlSerializer {
     
   private findFirstValidNode(el: Element) {
     let node: Node = el.firstChild!;
-    while (!VALID_ELEMENTS.hasOwnProperty(node.nodeName.toLowerCase())) {
+    while (node.nodeType !== Node.TEXT_NODE &&
+           !VALID_ELEMENTS.hasOwnProperty(node.nodeName.toLowerCase())) {
       this.sanitizedSomething = true;
       node = this.checkClobberedElement(node, node.nextSibling!);
       if (!node) {
