@@ -97,7 +97,7 @@ class SanitizingHtmlSerializer {
     // This cannot use a TreeWalker, as it has to run on Angular's various DOM adapters.
     // However this code never accesses properties off of `document` before deleting its contents
     // again, so it shouldn't be vulnerable to DOM clobbering.
-    let current: Node = el.firstChild !;
+    let current = this.findFirstValidNode(el);
     while (current) {
       if (current.nodeType === Node.ELEMENT_NODE) {
         this.startElement(current as Element);
@@ -128,6 +128,18 @@ class SanitizingHtmlSerializer {
       }
     }
     return this.buf.join('');
+  }
+    
+  private findFirstValidNode(el: Element) {
+    let node: Node = el.firstChild!;
+    while (!VALID_ELEMENTS.hasOwnProperty(node.nodeName.toLowerCase())) {
+      this.sanitizedSomething = true;
+      node = this.checkClobberedElement(node, node.nextSibling!);
+      if (!node) {
+        break;
+      }
+    }
+    return node;
   }
 
   private startElement(element: Element) {
