@@ -151,19 +151,6 @@ class SanitizingHtmlSerializer {
     return this.buf.join('');
   }
     
-  private findFirstValidNode(el: Element) {
-    let node: Node = el.firstChild!;
-    while (node.nodeType !== Node.TEXT_NODE &&
-           !VALID_ELEMENTS.hasOwnProperty(node.nodeName.toLowerCase())) {
-      this.sanitizedSomething = true;
-      node = this.checkClobberedElement(node, node.nextSibling!);
-      if (!node) {
-        break;
-      }
-    }
-    return node;
-  }
-
   private startElement(element: Element) {
     const tagName = element.nodeName.toLowerCase();
     if (!VALID_ELEMENTS.hasOwnProperty(tagName)) {
